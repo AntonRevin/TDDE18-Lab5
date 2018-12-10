@@ -1,6 +1,7 @@
 #ifndef _CLEANER_H_
 #define _CLEANER_H_
 
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <list>

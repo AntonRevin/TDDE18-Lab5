@@ -12,7 +12,7 @@ void printError(string const description) {
 }
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
+    if (argc < 3) {
         printError("ERROR: No arguments given.");
         return -1;
     }
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
                 printError("ERROR: Words are defined as containing 3 or more characters.");
                 return -1;
             }
-        } else {
+        } else if (outputFormat == "-o") {
             printError("ERROR: Second argument missing or invalid.");
             return -1;
         }
@@ -67,27 +67,28 @@ int main(int argc, char** argv) {
     */
     int maxWidth{cleaner.getLargestWordSize()};
 
+    auto aComparator = [](pair<string, int> left, pair<string, int> right) {
+        return left.first.compare(right.first) < 0;
+    };
+    auto aPrinter = [maxWidth](pair<string, int> currentPair) {
+        cout << left << setw(maxWidth) << currentPair.first << " " << currentPair.second << endl;
+    };
+    auto fComparator = [](pair<string, int> left, pair<string, int> right) {
+        return left.second >= right.second;
+    };
+    auto fPrinter = [maxWidth](pair<string, int> currentPair) {
+        cout << right << setw(maxWidth) << currentPair.first << " " << currentPair.second << endl;
+    };
+
     switch (outputFormat[1]) {
         case 'a':
-            auto comparator = [](pair<string, int> left, pair<string, int> right) {
-                return left.first.compare(right.first) < 0;
-            };
-            auto printer = [maxWidth](pair<string, int> currentPair) {
-                cout << left << setw(maxWidth) << currentPair.first << " " << currentPair.second << endl;
-            };
-            cleaner.sort(comparator);
-            cleaner.dynamicPrint(printer);
+            cleaner.sort(aComparator);
+            cleaner.dynamicPrint(aPrinter);
             break;
 
         case 'f':
-            auto comparator = [](pair<string, int> left, pair<string, int> right) {
-                return left.second >= right.second;
-            };
-            auto printer = [maxWidth](pair<string, int> currentPair) {
-                cout << right << setw(maxWidth) << currentPair.first << " " << currentPair.second << endl;
-            };
-            cleaner.sort(comparator);
-            cleaner.dynamicPrint(printer);
+            cleaner.sort(fComparator);
+            cleaner.dynamicPrint(fPrinter);
             break;
 
         case 'o':
