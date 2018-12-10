@@ -1,11 +1,11 @@
 #ifndef _CLEANER_H_
 #define _CLEANER_H_
 
-#include <list>
-#include <string>
-#include <map>
-#include <iostream>
 #include <functional>
+#include <iostream>
+#include <list>
+#include <map>
+#include <string>
 
 class Cleaner {
    private:
@@ -16,9 +16,9 @@ class Cleaner {
    public:
     Cleaner();
     void addWord(std::string potentialWord);
-    void dynamicPrint(std::function<void (std::pair<std::string const&,int> const&)> const& printFunction);
-    void sort(std::function<bool (std::pair<std::string const&,int> const&, std::pair<std::string const&,int> const&)> const& comparator);
-    void printOrdered(int limit);
+    void dynamicPrint(std::function<void(std::pair<std::string const&, int> const&)> const& printFunction);
+    void sort(std::function<bool(std::pair<std::string const&, int> const&, std::pair<std::string const&, int> const&)> const& comparator);
+    void printOrdered(int const limit);
     int getLargestWordSize();
     ~Cleaner();
 };
