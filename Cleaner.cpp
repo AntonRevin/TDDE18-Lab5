@@ -44,5 +44,36 @@ void Cleaner::printOrdered(int const limit) {
     std::cout << std::endl;
 }
 
+int Cleaner::getLargestWordSize(){
+    return largestWordSize;
+}
+
+void Cleaner::dynamicPrint(std::function<void(std::pair<std::string const&, int> const&)> const& printFunction){
+    for_each(frequencyPairs.begin(),frequencyPairs.end(),printFunction);
+}
+
+void Cleaner::sort(std::function< bool ( std::pair<std::string const&,int> const& left, std::pair<std::string const&,int> const& right ) > const& comparator)
+{
+    std::map< std::string,int > sortedValid{};
+    for (std::string word : validWords)
+    {
+        if(sortedValid.count(word)>0)
+        {
+            sortedValid[word]=sortedValid[word]+1;
+        }
+        else
+        {
+            sortedValid.emplace(word,1);
+        }
+    });
+   
+    for(pair<std::string,int> p : sortedValid)
+    {
+        frequencyPairs.push_front(p);
+    }
+
+    frequencyPairs.sort(comparator);
+}
+
 Cleaner::~Cleaner() {
 }
