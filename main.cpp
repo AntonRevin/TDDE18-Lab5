@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <string>
 #include "Cleaner.h"
 
@@ -54,11 +55,18 @@ int main(int argc, char** argv) {
     }
 
     Cleaner cleaner{};
-    string potentialWord{};
 
-    while (fileStream >> potentialWord) {
+    istream_iterator<string> iter(fileStream);
+    istream_iterator<string> eof;
+
+    list<string> potentialWords;
+
+    copy(iter, eof, back_inserter(potentialWords));
+
+    auto cleanerAdder = [&cleaner](string potentialWord) {
         cleaner.addWord(potentialWord);
-    }
+    };
+    for_each(potentialWords.begin(), potentialWords.end(), cleanerAdder);
 
     fileStream.close();
 
@@ -101,8 +109,5 @@ int main(int argc, char** argv) {
             break;
     }
 
-    /*
-        Alles gut 
-    */
     return 1;
 }

@@ -4,8 +4,8 @@ Cleaner::Cleaner() : validWords{}, frequencyPairs{}, largestWordSize{} {
 }
 
 void Cleaner::addWord(std::string potentialWord) {
-    potentialWord.erase(0, potentialWord.find_first_not_of("\"\'("));
     potentialWord.erase(0, potentialWord.find_first_not_of("\n\t\v\f\r"));
+    potentialWord.erase(0, potentialWord.find_first_not_of("\"\'("));
     potentialWord.erase(potentialWord.find_last_not_of("\n\v\f\r\t") + 1);
     potentialWord.erase(potentialWord.find_last_not_of(",;.:?!\"\')") + 1);
 
@@ -23,15 +23,17 @@ void Cleaner::addWord(std::string potentialWord) {
 
     std::transform(potentialWord.begin(), potentialWord.end(), potentialWord.begin(), ::tolower);
 
-    if (potentialWord.size() > largestWordSize)
+    if (potentialWord.size() > largestWordSize) {
         largestWordSize = potentialWord.size();
+    }
 
     validWords.push_back(potentialWord);
 }
 
 void Cleaner::printOrdered(int const limit) {
     int currentSize{};
-    for (std::string currentWord : validWords) {
+
+    auto wordPlacer = [&currentSize, &limit](std::string currentWord) {
         if ((currentSize + currentWord.size()) < limit) {
             currentSize += currentWord.size() + 1;
             std::cout << currentWord << " ";
@@ -40,7 +42,9 @@ void Cleaner::printOrdered(int const limit) {
             std::cout << std::endl;
             std::cout << currentWord << " ";
         }
-    }
+    };
+    std::for_each(validWords.begin(), validWords.end(), wordPlacer);
+
     std::cout << std::endl;
 }
 
@@ -52,19 +56,19 @@ void Cleaner::dynamicPrint(std::function<void(std::pair<std::string const&, int>
     std::for_each(frequencyPairs.begin(), frequencyPairs.end(), printFunction);
 }
 
-void Cleaner::sort(std::function<bool(std::pair<std::string const&, int> const& left, std::pair<std::string const&, int> const& right)> const& comparator) {
+void Cleaner::sort(std::function<bool(std::pair<std::string const&, int> const& left, std::pair<std::string const&, int> const& right)> const& comparator) { 
     std::map<std::string, int> sortedValid{};
-    for (std::string word : validWords) {
+
+    auto updater = [&sortedValid](std::string word) {
         if (sortedValid.count(word) > 0) {
             sortedValid[word] = sortedValid[word] + 1;
         } else {
             sortedValid.emplace(word, 1);
         }
     };
+    std::for_each(validWords.begin(), validWords.end(), updater);
 
-    for (std::pair<std::string, int> p : sortedValid) {
-        frequencyPairs.push_front(p);
-    }
+    std::copy(sortedValid.begin(), sortedValid.end(), std::front_inserter(frequencyPairs));
 
     frequencyPairs.sort(comparator);
 }
